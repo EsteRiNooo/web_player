@@ -53,10 +53,11 @@ const VideoPlayer = ({ src }) => {
   }
 
   const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen()
+    const container = containerRef.current
+    if (!document.fullscreenElement && container) {
+      container.requestFullscreen()
       setIsFullscreen(true)
-    } else {
+    } else if (document.fullscreenElement) {
       document.exitFullscreen()
       setIsFullscreen(false)
     }
@@ -65,8 +66,10 @@ const VideoPlayer = ({ src }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' || e.key.toLowerCase() === 'f') {
-        document.exitFullscreen()
-        setIsFullscreen(false)
+        if (document.fullscreenElement) {
+          document.exitFullscreen()
+          setIsFullscreen(false)
+        }
       }
     }
 
@@ -78,20 +81,26 @@ const VideoPlayer = ({ src }) => {
     <div
       ref={containerRef}
       className={`${
-        isFullscreen ? 'w-screen h-screen flex items-center justify-center' : 'max-w-5xl mx-auto'
-      } bg-black bg-opacity-70 p-4 rounded-lg flex flex-col items-center justify-center`}
+        isFullscreen
+          ? 'fixed top-0 left-0 w-screen h-screen z-50 bg-black flex flex-col justify-center items-center'
+          : 'max-w-5xl mx-auto bg-black bg-opacity-70 p-4 rounded-lg flex flex-col items-center justify-center'
+      }`}
     >
       <div className="w-full flex flex-col items-center justify-center">
         <video
           ref={videoRef}
           src={src}
           className={`${
-            isFullscreen ? 'w-screen h-screen object-contain' : 'w-full h-auto'
+            isFullscreen ? 'w-full h-full object-contain' : 'w-full h-auto'
           } rounded-md mb-2`}
           controls={false}
         />
         {!isFullscreen && (
-          <TimeSlider currentTime={currentTime} duration={duration} onChange={handleTimeChange} />
+          <TimeSlider
+            currentTime={currentTime}
+            duration={duration}
+            onChange={handleTimeChange}
+          />
         )}
         <div className="flex items-center justify-between w-full mt-2 bg-black/60 p-2 rounded-md">
           <Controls isPlaying={isPlaying} onPlayPause={togglePlay} />
