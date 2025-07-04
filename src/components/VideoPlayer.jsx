@@ -77,19 +77,27 @@ const VideoPlayer = ({ src }) => {
   return (
     <div
       ref={containerRef}
-      className="bg-black bg-opacity-70 p-4 rounded-lg max-w-5xl mx-auto flex flex-col items-center"
+      className={`${
+        isFullscreen ? 'w-screen h-screen flex items-center justify-center' : 'max-w-5xl mx-auto'
+      } bg-black bg-opacity-70 p-4 rounded-lg flex flex-col items-center justify-center`}
     >
-      <video
-        ref={videoRef}
-        src={src}
-        className="w-full h-auto rounded-md mb-2"
-        controls={false}
-      />
-      <TimeSlider currentTime={currentTime} duration={duration} onChange={handleTimeChange} />
-      <div className="flex items-center justify-between w-full mt-2 bg-black/60 p-2 rounded-md">
-        <Controls isPlaying={isPlaying} onPlayPause={togglePlay} />
-        <VolumeSlider value={volume} onChange={handleVolumeChange} />
-        <FullscreenButton isFullscreen={isFullscreen} toggleFullscreen={toggleFullscreen} />
+      <div className="w-full flex flex-col items-center justify-center">
+        <video
+          ref={videoRef}
+          src={src}
+          className={`${
+            isFullscreen ? 'w-screen h-screen object-contain' : 'w-full h-auto'
+          } rounded-md mb-2`}
+          controls={false}
+        />
+        {!isFullscreen && (
+          <TimeSlider currentTime={currentTime} duration={duration} onChange={handleTimeChange} />
+        )}
+        <div className="flex items-center justify-between w-full mt-2 bg-black/60 p-2 rounded-md">
+          <Controls isPlaying={isPlaying} onPlayPause={togglePlay} />
+          <VolumeSlider value={volume} onChange={handleVolumeChange} />
+          <FullscreenButton isFullscreen={isFullscreen} toggleFullscreen={toggleFullscreen} />
+        </div>
       </div>
     </div>
   )
