@@ -10,6 +10,7 @@ const VolumeSlider = ({ value, onChange }) => {
         step="0.01"
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
+        className="w-32"
       />
     </div>
   )
